@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube プレイリスト生成ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>YouTube プレイリスト生成ツール</h1>
+                <button class="btn btn--outline theme-toggle" id="themeToggle">
+                    <span class="theme-icon">🌙</span>
+                    <span class="theme-text">ダークモード</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="card input-section">
+                <div class="card__header">
+                    <h2>YouTube URL リスト</h2>
+                </div>
+                <div class="card__body">
+                    <div class="form-group">
+                        <label for="urlInput" class="form-label">
+                            YouTube動画URLを貼り付けてください（1行に1つのURL）
+                        </label>
+                        <textarea 
+                            id="urlInput" 
+                            class="form-control url-textarea" 
+                            placeholder="例:
+https://www.youtube.com/watch?v=VIDEO_ID
+https://youtu.be/VIDEO_ID
+https://www.youtube.com/shorts/VIDEO_ID
+..."
+                            rows="10"
+                        ></textarea>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="form-group">
+                            <label for="chunkSize" class="form-label">チャンクサイズ</label>
+                            <select id="chunkSize" class="form-control">
+                                <option value="10">10件</option>
+                                <option value="25">25件</option>
+                                <option value="50" selected>50件（推奨）</option>
+                                <option value="100">100件</option>
+                                <option value="200">200件</option>
+                                <option value="500">500件</option>
+                                <option value="1000">1000件</option>
+                                <option value="unlimited">無制限</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="unlimitedWarning" class="warning-message hidden">
+                        <div class="status status--warning">
+                            ⚠️ 無制限モードは大量のデータ処理により時間がかかる場合があります
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="generateBtn" class="btn btn--primary btn--lg generate-btn">
+                            <span class="btn-content">
+                                <span class="btn-icon">🚀</span>
+                                <span class="btn-text">生成開始</span>
+                            </span>
+                        </button>
+                        <button id="cancelBtn" class="btn btn--outline btn--lg hidden">
+                            キャンセル
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="progressSection" class="card progress-section hidden">
+                <div class="card__header">
+                    <h3>処理進捗</h3>
+                </div>
+                <div class="card__body">
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="progressPercent">0%</span>
+                            <span id="progressStatus">待機中...</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">総URL数</div>
+                            <div id="totalUrls" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">有効URL数</div>
+                            <div id="validUrls" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">無効URL数</div>
+                            <div id="invalidUrls" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">処理時間</div>
+                            <div id="processingTime" class="stat-value">0秒</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultsSection" class="card results-section hidden">
+                <div class="card__header">
+                    <h3>生成結果</h3>
+                    <button id="exportBtn" class="btn btn--secondary">
+                        📊 CSV エクスポート
+                    </button>
+                </div>
+                <div class="card__body">
+                    <div class="results-info">
+                        <div class="status status--info">
+                            下のリンクをクリックしてYouTubeで開き、プレイリストに保存してください
+                        </div>
+                    </div>
+                    <div id="playlistLinks" class="playlist-links"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
